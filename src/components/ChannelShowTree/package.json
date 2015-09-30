@@ -1,0 +1,6 @@
+{
+  "name": "ChannelShowTree",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ChannelShowTree.js"
+}

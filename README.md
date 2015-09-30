@@ -1,3 +1,47 @@
+## Wishlist
+# Implement tracking pixel, see: https://github.com/reddit/reddit-mobile/
+# Implement a tree view for navigating channels, see: https://github.com/chenglou/react-treeview
+
+Insight Component Hierarchy (WIP)
+*
+|- NavigationBar
+|  `- LoginButton
+|     `- MyAccountPanel
+|- IndexPage
+|- LoginPage
+|  `- LoginForm
+|- RegistrationPage
+|  `- RegistrationForm
+|- ErrorPage
+|- ChannelListPage
+|  |- FilterBar
+|  |  `- FilterBarButton
+|  `- ChannelList
+|     `- ChannelListItem
+|        |- ChannelListItemPoster
+|        `- ChannelSummary
+|- ChannelSearchContainer
+|  |- ChannelSearchInput -> Input
+|  `- ChannelSearchSelector -> Typeahead
+|     `- ChannelSearchSelectorItem
+|        |- Thumbnail
+|        `- ChannelSummary
+|- ChannelShowTree
+`- ShowPage
+   |- ShowVideoPanel
+      `- VideoPlayer
+   |- ShowSlideshowPanel
+      `- Slideshow
+   |- ShowAssessmentPanel
+      `- Assessment
+   |- ShowPollPanel
+   `- ShowChatPanel
+
+Insight Flux Stores (Dynamic stuff)
+*
+|- ChannelStore
+|- ShowStore
+|- ChatStore
 ## React Starter Kit — "isomorphic" web app boilerplate
 
 [![Support us on Bountysource](https://dl.dropboxusercontent.com/u/16006521/react-starter-kit/banner.png)](https://salt.bountysource.com/teams/react-starter-kit)<br>

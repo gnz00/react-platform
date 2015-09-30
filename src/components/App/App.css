@@ -4,6 +4,10 @@
 
 @import '../variables.css';
 
+.topcoat-component {
+  @import './css/topcoat-desktop-dark.css'
+}
+
 /*
  * Base styles
  * ========================================================================== */
