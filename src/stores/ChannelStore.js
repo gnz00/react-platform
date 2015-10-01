@@ -1,42 +1,14 @@
-import EventEmitter from "events";
 import Dispatcher from "../core/Dispatcher";
 import ActionTypes from "../constants/ActionTypes";
 import http from '../core/HttpClient';
 import _ from "lodash";
+import JsonApiStore from "./JsonApiStore";
 
-let state = {
-  meta: {},
-  data: []
-};
-const CHANGE_EVENT = "CHANGE";
-
-class ChannelStore extends EventEmitter {
+class ChannelStore extends JsonApiStore {
   constructor() {
     super();
-  }
 
-  findAll() {
-    return _.filter(state.data, (item) => {
-      return item.type === 'channels';
-    });
-  }
-
-  findRecord(id) {
-    return _.find(state.data, (item) => {
-      return item.type === 'channels' && item.id == id;
-    });
-  }
-
-  emitChange() {
-    this.emit(CHANGE_EVENT);
-  }
-
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
-
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+    this.STORE_TYPE = "channels";
   }
 }
 
@@ -47,31 +19,28 @@ channelStore.dispatchToken = Dispatcher.register(action => {
 
     case ActionTypes.CHANNEL_FIND_ALL:
       http.get('/api/channels').then(result => {
-        state = result;
+        channelStore.state = result;
         channelStore.emitChange();
       });
       break;
 
     case ActionTypes.CHANNEL_FIND_RECORD:
       http.get('/api/channels/' + action.id).then(result => {
-        removeChannel(action.id);
-        addChannels(result.data);
+        channelStore.removeItem(action.id);
+        channelStore.addItems(result.data);
         channelStore.emitChange();
       });
       break;
+
+    case ActionTypes.CHANNEL_FIND_RELATED_RECORDS:
+      http.get(`/api/shows/${action.id}/${action.relationType}`).then(result => {
+        showStore.removeIncludedItem(action.id);
+        showStore.addIncludedItems(result.data);
+        showStore.emitChange();
+      });
     default:
       return;
   }
 });
-
-function removeChannel(id) {
-  state.data = _.reject(state.data, (item) => {
-    return item.type == 'channels' && item.id == id;
-  });
-}
-
-function addChannels(channels) {
-  state.data.push(...channels);
-}
 
 export default channelStore;

@@ -3,8 +3,10 @@
 import React, { PropTypes, Component } from 'react';
 import ChannelSearchInput from '../ChannelSearchInput';
 import ChannelSearchSelector from '../ChannelSearchSelector';
-import ChannelActionCreator from '../../actions/ChannelActionCreator';
-import ChannelStore from '../../stores/ChannelStore';
+
+import ActionCreator from '../../actions/ActionCreator';
+import JsonApiStore from '../../stores/JsonApiStore';
+
 import _ from "lodash";
 import filters from "../../utils/filters";
 
@@ -13,26 +15,25 @@ class ChannelSearchContainer extends Component {
   constructor(props) {
     super(props);
 
-    var channels = ChannelStore.findAll() || [];
     this.state = {
-      channels: this.props.channels || channels,
-      filteredChannels: this.props.channels || channels,
-      filterText: this.props.filterText || ""
+      channels: [],
+      filteredChannels: [],
+      filterText: ""
     };
   }
 
   componentWillMount() {
-    ChannelActionCreator.findAll();
+    ActionCreator.findAll("channels");
   }
 
   // Listen for updates to the Channels
   componentDidMount() {
     this._onStoreChange__callback = this._onStoreChange.bind(this);
-    ChannelStore.addChangeListener(this._onStoreChange__callback);
+    JsonApiStore.addChangeListener(this._onStoreChange__callback, "channels");
   }
 
   componentWillUnmount() {
-    ChannelStore.removeChangeListener(this._onStoreChange__callback);
+    JsonApiStore.removeChangeListener(this._onStoreChange__callback, "channels");
   }
 
   render() {
@@ -58,7 +59,7 @@ class ChannelSearchContainer extends Component {
   }
 
   _onStoreChange(event) {
-    let channels = ChannelStore.findAll();
+    let channels = JsonApiStore.findAll("channels");
     this.setState({
       channels: channels,
     });

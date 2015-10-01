@@ -3,7 +3,7 @@
 import keyMirror from 'fbjs/lib/keyMirror';
 
 export default keyMirror({
-  CHANNEL_FIND_ALL: null,
-  CHANNEL_FIND_RECORD: null,
-  CHANNEL_FIND_SHOW_RECORDS: null
+  FIND_ALL_RECORDS: null,
+  FIND_RECORD: null,
+  FIND_RELATED_RECORDS: null
 });

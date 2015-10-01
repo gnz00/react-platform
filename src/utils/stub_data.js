@@ -136,6 +136,13 @@ stubs["chapters"] = {
         "attributes": {
           "title": "Keep the Pimp Hand Strong",
           "body": "As a young man, Billy Mays had to endure the cold and dangerous streets of Chicago in the 1960s. An entrepreneur from an early age, Billy scored his first crack rock at the age of 8. He cut the rock with powdered bleach and doubled up."
+        },
+        "relationships": {
+          "shows": {
+            "data": [
+              { "type": "shows", "id": "1" }
+            ]
+          }
         }
       }
     ]
@@ -151,6 +158,13 @@ stubs["slides"] = {
         "title": "Telltale signs of A Narc",
         "alt": "Billy has never been arrested",
         "src": "http://cloudfront.aws.com/narc_800x600.jpg"
+      },
+      "relationships": {
+        "shows": {
+          "data": [
+            { "type": "shows", "id": "1" }
+          ]
+        }
       }
     }, {
       "id": "2",
@@ -159,6 +173,13 @@ stubs["slides"] = {
         "title": "How To Hide A Body",
         "alt": "They Can't Snitch if They're Dead",
         "src": "http://cloudfront.aws.com/deadsnitch_800x600.jpg"
+      },
+      "relationships": {
+        "shows": {
+          "data": [
+            { "type": "shows", "id": "1" }
+          ]
+        }
       }
     }
   ]
@@ -174,6 +195,13 @@ stubs["events"] = {
         "eventType": "showVideo",
         "params": '{ "videoId": 2, "isModal": true, "closeOnExit": true }',
         "startTime": "00:10"
+      },
+      "relationships": {
+        "shows": {
+          "data": [
+            { "type": "shows", "id": "1" }
+          ]
+        }
       }
     }, {
       "id": "2",
@@ -181,6 +209,13 @@ stubs["events"] = {
       "attributes": {
         "eventType": "showAssessment",
         "params": '{ "assessmentId": 1, "container": "slideShowContainer", "pausePrimaryVideo": true }'
+      },
+      "relationships": {
+        "shows": {
+          "data": [
+            { "type": "shows", "id": "1" }
+          ]
+        }
       }
     }]
 };
@@ -194,8 +229,15 @@ stubs["videos"] = {
       "attributes": {
         "title": "Billy Mays Introduction",
         "description": "Get to know the king of pimps",
-        "src": "http://cloudfront.aws.com/billy-01.mp4",
+        "src": "http://video-js.zencoder.com/oceans-clip.mp4",
         "mimeType": "video/mp4"
+      },
+      "relationships": {
+        "shows": {
+          "data": [
+            { "type": "shows", "id": "1" }
+          ]
+        }
       }
     }
   ]
@@ -209,7 +251,14 @@ stubs["presenters"] = {
     "attributes": {
       "name": "Billy",
       "bio": "Sickest son of a bitch east of the Mississippi."
-    }
+    },
+      "relationships": {
+        "shows": {
+          "data": [
+            { "type": "shows", "id": "1" }
+          ]
+        }
+      }
   }]
 };
 

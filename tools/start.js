@@ -15,7 +15,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 global.WATCH = true;
 const config = require('./config')[0]; // Client-side bundle configuration
 const bundler = webpack(config);
-console.log(bundler.options.resolve);
+
 /**
  * Launches a development web server with "live reload" functionality -
  * synchronizing URLs, interactions and code changes across multiple devices.

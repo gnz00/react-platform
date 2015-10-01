@@ -1,1 +1,6 @@
-package.json
+{
+  "name": "ShowPage",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ShowPage.js"
+}

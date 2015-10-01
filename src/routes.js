@@ -6,13 +6,12 @@ import http from './core/HttpClient';
 import App from './components/App';
 import IndexPage from './components/IndexPage';
 import ChannelPage from './components/ChannelPage';
+import ShowPage from './components/ShowPage';
 import NotFoundPage from './components/NotFoundPage';
 import ErrorPage from './components/ErrorPage';
 
-/**
- * Need to import stores so that they'll register with the Dispatcher.
- */
-import ChannelStore from './stores/ChannelStore';
+import ActionCreator from "./actions/ActionCreator";
+import JsonApiStore from "./stores/JsonApiStore";
 
 const router = new Router(on => {
   on('*', async (state, next) => {
@@ -26,6 +25,11 @@ const router = new Router(on => {
 
   on('/channels/:id', async (state, next) => {
     return <ChannelPage channel_id={state.params.id}/>
+
+  });
+
+  on('/shows/:id', async (state, next) => {
+    return <ShowPage show_id={state.params.id}/>
   });
 
   on('error', (state, error) => {
