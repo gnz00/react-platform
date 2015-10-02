@@ -1,0 +1,6 @@
+{
+  "name": "ShowRuntimeBar",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ShowRuntimeBar.js"
+}

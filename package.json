@@ -23,6 +23,7 @@
     "mongoose": "^4.1.9",
     "normalize.css": "3.0.3",
     "react": "0.14.0-rc1",
+    "react-addons-css-transition-group": "^0.14.0-rc1",
     "react-dom": "0.14.0-rc1",
     "react-routing": "0.0.4",
     "react-treeview": "^0.4.2",

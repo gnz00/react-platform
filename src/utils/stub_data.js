@@ -95,7 +95,11 @@ stubs["shows"] = {
             {
               "type": "events",
               "id": "1"
-            }
+            },
+            {
+              "type": "events",
+              "id": "2"
+            },
           ]
         },
         "videos": {
@@ -194,7 +198,8 @@ stubs["events"] = {
       "attributes": {
         "eventType": "showVideo",
         "params": '{ "videoId": 2, "isModal": true, "closeOnExit": true }',
-        "startTime": "00:10"
+        "startTimeOffset": "10000",
+        "duration": "60000"
       },
       "relationships": {
         "shows": {
@@ -208,7 +213,9 @@ stubs["events"] = {
       "type": "events",
       "attributes": {
         "eventType": "showAssessment",
-        "params": '{ "assessmentId": 1, "container": "slideShowContainer", "pausePrimaryVideo": true }'
+        "params": '{ "assessmentId": 1, "container": "slideShowContainer", "pausePrimaryVideo": true }',
+        "startTimeOffset": "5000",
+        "duration": "120000"
       },
       "relationships": {
         "shows": {

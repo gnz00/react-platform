@@ -12,6 +12,7 @@ import ErrorPage from './components/ErrorPage';
 
 import ActionCreator from "./actions/ActionCreator";
 import JsonApiStore from "./stores/JsonApiStore";
+import CSSTransitionGroup from 'react-addons-css-transition-group';
 
 const router = new Router(on => {
   on('*', async (state, next) => {
@@ -29,7 +30,12 @@ const router = new Router(on => {
   });
 
   on('/shows/:id', async (state, next) => {
-    return <ShowPage show_id={state.params.id}/>
+    let startingRuntime = (state.query && state.query.time ? parseInt(state.query.time, 10) : 0);
+    return (
+      <CSSTransitionGroup transitionName="default" transitionAppear={true} transitionLeaveTimeout={5000} transitionAppearTimeout={5000} transitionEnterTimeout={5000}>
+        <ShowPage key="show_page" show_id={state.params.id} currentRuntime={startingRuntime}/>
+      </CSSTransitionGroup>
+    );
   });
 
   on('error', (state, error) => {

@@ -1,0 +1,6 @@
+{
+  "name": "ShowCanvasContainer",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ShowCanvasContainer.js"
+}
