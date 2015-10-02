@@ -16,6 +16,7 @@ class ShowCanvasContainer extends Component {
           this.props.currentEvents.map((e) => {
             return <ShowCanvasEvent
               key={"event_" + e.id}
+              currentRuntime={this.props.currentRuntime}
               currentEvent={e} />
           })
         }

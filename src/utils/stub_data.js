@@ -196,8 +196,8 @@ stubs["events"] = {
       "id": "1",
       "type": "events",
       "attributes": {
-        "eventType": "showVideo",
-        "params": '{ "videoId": 2, "isModal": true, "closeOnExit": true }',
+        "eventType": "SHOW_VIDEO",
+        "params": '{ "videoId": 1, "containerReference": "primaryVideo" }',
         "startTimeOffset": "10000",
         "duration": "60000"
       },
@@ -212,8 +212,9 @@ stubs["events"] = {
       "id": "2",
       "type": "events",
       "attributes": {
-        "eventType": "showAssessment",
+        "eventType": "CUSTOM",
         "params": '{ "assessmentId": 1, "container": "slideShowContainer", "pausePrimaryVideo": true }',
+        "callbacks": {}, // onMount, onUpdate, onUnmount
         "startTimeOffset": "5000",
         "duration": "120000"
       },

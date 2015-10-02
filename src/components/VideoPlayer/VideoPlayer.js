@@ -61,6 +61,7 @@ class VideoPlayer extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
+
     var isEndless = this.props.endlessMode;
     var willBeEndless = nextProps.endlessMode;
 
@@ -89,7 +90,8 @@ class VideoPlayer extends Component {
     if (currentSrc !== newSrc) {
       this.setVideoPlayerSrc(newSrc);
     } else if (isEndless === willBeEndless) {
-      this.restartVideo();
+      this.syncCurrentTime(nextProps.currentTime);
+      //this.restartVideo();
     }
   };
 
@@ -155,8 +157,6 @@ class VideoPlayer extends Component {
 
   mountVideoPlayer() {
     var src = this.props.src;
-    console.log(src);
-    console.log(this);
     var options = this.getVideoPlayerOptions();
 
     this._player = vjs(this.getVideoPlayerEl(), options);
@@ -174,6 +174,8 @@ class VideoPlayer extends Component {
     if (this.props.endlessMode) {
       this.addEndlessMode();
     }
+
+    this.syncCurrentTime(this.props.currentTime);
   };
 
   unmountVideoPlayer() {
@@ -242,6 +244,25 @@ class VideoPlayer extends Component {
     this.props.onReady();
   };
 
+  syncCurrentTime(currentTime = 0) {
+
+    console.log(currentTime);
+    // Set the runtime
+    if (currentTime) {
+      let player = this.getVideoPlayer();
+
+      console.log(player.seekable());
+
+      if (player.paused()) {
+        player.play();
+        player.currentTime(currentTime);
+        player.pause();
+      } else {
+        player.currentTime(currentTime);
+      }
+    }
+  }
+
   handleVideoPlayerResize() {
     var player = this._player;
     var videoMeasurements = this.getResizedVideoPlayerMeasurements();
@@ -281,6 +302,8 @@ class VideoPlayer extends Component {
       </video>
     );
   };
+
+  _handleVideoPlayerResize = () => {};
 
 };
 

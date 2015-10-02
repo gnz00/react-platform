@@ -51,17 +51,17 @@ class ShowPage extends Component {
     JsonApiStore.addChangeListener(this._onStoreChange__callback, "videos");
     JsonApiStore.addChangeListener(this._onStoreChange__callback, "events");
 
-    this._tickInterval = setInterval(() => {
-      this.tick();
-    }, 40);
+    requestAnimationFrame(this.tick.bind(this));
+  }
+
+  componentDidUpdate() {
+    //requestAnimationFrame(this.tick.bind(this));
   }
 
   componentWillUnmount() {
     JsonApiStore.removeChangeListener(this._onStoreChange__callback, "shows");
     JsonApiStore.removeChangeListener(this._onStoreChange__callback, "videos");
     JsonApiStore.removeChangeListener(this._onStoreChange__callback, "events");
-
-    clearInterval(this._tickInterval);
   }
 
 
@@ -70,16 +70,16 @@ class ShowPage extends Component {
     const events = this.getCurrentEvents(this.state.currentRuntime);
 
     this.context.onSetTitle(title);
-    console.log('rendering ShowPage');
     return (
         <div className="ShowPage">
           <div className="ShowHeader">
             {title}
           </div>
-          <ShowCanvasContainer currentEvents={events}/>
+          <ShowCanvasContainer currentEvents={events} currentRuntime={this.state.currentRuntime}/>
           <ShowControls isPlaying={this.state.isPlaying}
             toggleShowState={this.toggleState.bind(this)} />
           <ShowRuntimeBar ref="RuntimeBar"
+            events={this.state.events}
             updateCurrentRuntime={this.updateCurrentRuntime.bind(this)}
             currentRuntime={this.state.currentRuntime}
             totalRuntime={this.state.totalRuntime} />
@@ -149,24 +149,16 @@ class ShowPage extends Component {
   // Does this update currentRuntime if say 'showState' is active, thus causing a re-render, where render is just a snapshot of the state?
   // How do we keep track of time deltas? setInterval is unreliable, we need to track using timestamps.
   tick() {
-    // Store the time so we can delta it
-    if (!this._lastTickIntervalTimestamp)
-      this._lastTickIntervalTimestamp = Date.now();
+    setTimeout(() => {
+      requestAnimationFrame(this.tick.bind(this));
+      var now = new Date().getTime(),
+          dt = now - (this._lastTickIntervalTime || now);
 
-    if (this.state.isPlaying) {
-      let timeDelta = new Date().getTime() - this._lastTickIntervalTimestamp;
-      this.setState({
-        currentRuntime:  this.state.currentRuntime + timeDelta
-      });
+      this._lastTickIntervalTime = now;
 
-     this._lastTickIntervalTimestamp = Date.now();
-    } else {
-      this._lastTickIntervalTimestamp = null;
-    }
-  }
-
-  runEvent(e) {
-    console.log(e);
+      if (this.state.isPlaying)
+        this.updateCurrentRuntime(this.state.currentRuntime + dt);
+    }, 1000 / 60);
   }
 
   _onStoreChange(event) {
@@ -184,8 +176,7 @@ class ShowPage extends Component {
 
   // Need to store the original callback so we can remove the event on unmount
   _onStoreChange__callback = null;
-  _tickInterval = null;
-  _lastTickIntervalTimestamp = null;
+  _lastTickIntervalTime = null;
 
 }
 
