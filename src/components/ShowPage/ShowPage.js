@@ -14,6 +14,9 @@ import VideoPlayer from "../VideoPlayer";
 import ShowCanvasContainer from "../ShowCanvasContainer";
 import ShowControls from "../ShowControls";
 import ShowRuntimeBar from "../ShowRuntimeBar";
+
+import FpsCounter from "../FpsCounter";
+
 import _ from "lodash";
 
 @withStyles(styles)
@@ -33,7 +36,9 @@ class ShowPage extends Component {
       currentRuntime: this.props.currentRuntime,
       activeEventIds: [],
       isPlaying: false,
-      totalRuntime: 0
+      totalRuntime: 0,
+      ticks: 0,
+      elapsed: 0
     };
   }
 
@@ -68,14 +73,18 @@ class ShowPage extends Component {
   render() {
     const title = ( this.state.show.attributes ? this.state.show.attributes.title : "Loading..." );
     const events = this.getCurrentEvents(this.state.currentRuntime);
-
     this.context.onSetTitle(title);
     return (
         <div className="ShowPage">
           <div className="ShowHeader">
             {title}
+            <FpsCounter
+              startTime={this._firstTick}
+              frameCount={this._ticks} />
           </div>
-          <ShowCanvasContainer currentEvents={events} currentRuntime={this.state.currentRuntime}/>
+          <ShowCanvasContainer
+            currentEvents={events}
+            currentRuntime={this.state.currentRuntime} />
           <ShowControls isPlaying={this.state.isPlaying}
             toggleShowState={this.toggleState.bind(this)} />
           <ShowRuntimeBar ref="RuntimeBar"
@@ -149,16 +158,22 @@ class ShowPage extends Component {
   // Does this update currentRuntime if say 'showState' is active, thus causing a re-render, where render is just a snapshot of the state?
   // How do we keep track of time deltas? setInterval is unreliable, we need to track using timestamps.
   tick() {
-    setTimeout(() => {
-      requestAnimationFrame(this.tick.bind(this));
-      var now = new Date().getTime(),
-          dt = now - (this._lastTickIntervalTime || now);
+    requestAnimationFrame(this.tick.bind(this));
+    let now = new Date().getTime(),
+        delta = now - (this._lastTick || now),
+        interval = 1000 / this._FPS;
 
-      this._lastTickIntervalTime = now;
+    // Restrict the FPS
+    if (delta > interval) {
+      this._lastTick = now - (delta % interval);
 
-      if (this.state.isPlaying)
-        this.updateCurrentRuntime(this.state.currentRuntime + dt);
-    }, 1000 / 60);
+      this._ticks++;
+
+      if (this.state.isPlaying) {
+        let newRuntime = this.state.currentRuntime + (delta - (delta % interval));
+        this.updateCurrentRuntime(newRuntime);
+      }
+    }
   }
 
   _onStoreChange(event) {
@@ -176,7 +191,10 @@ class ShowPage extends Component {
 
   // Need to store the original callback so we can remove the event on unmount
   _onStoreChange__callback = null;
-  _lastTickIntervalTime = null;
+  _lastTick = Date.now();
+  _firstTick = Date.now();
+  _ticks = 0;
+  _FPS = 30;
 
 }
 

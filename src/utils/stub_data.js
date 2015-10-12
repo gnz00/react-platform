@@ -237,7 +237,7 @@ stubs["videos"] = {
       "attributes": {
         "title": "Billy Mays Introduction",
         "description": "Get to know the king of pimps",
-        "src": "http://video-js.zencoder.com/oceans-clip.mp4",
+        "src": "/30fps.mp4",
         "mimeType": "video/mp4"
       },
       "relationships": {

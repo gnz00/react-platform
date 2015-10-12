@@ -19,16 +19,14 @@
     "lodash": "^3.10.1",
     "mongoose": "^4.1.9",
     "normalize.css": "3.0.3",
-    "react": "0.14.0-rc1",
+    "react": "0.14.x",
     "react-addons-css-transition-group": "^0.14.0-rc1",
     "react-dom": "0.14.0-rc1",
     "react-routing": "0.0.4",
     "react-treeview": "^0.4.2",
     "source-map-support": "0.3.2",
     "superagent": "1.4.0",
-    "topcoat": "^0.7.5",
-    "url-loader": "^0.5.6",
-    "videojs": "^4.12.15"
+    "url-loader": "^0.5.6"
   },
   "devDependencies": {
     "autoprefixer": "^6.0.3",
@@ -63,7 +61,6 @@
     "redbox-react": "^1.1.1",
     "replace": "^0.3.0",
     "style-loader": "^0.12.4",
-    "url-loader": "^0.5.6",
     "webpack": "^1.12.2",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.3.0"

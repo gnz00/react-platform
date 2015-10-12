@@ -26,15 +26,16 @@ class ShowRuntimeBar extends Component {
     this.width =  ReactDOM.findDOMNode(this).offsetWidth;
   }
 
-  componentDidUpdate() {
-    this.updateRuntimeIndicatorOffset();
+  componentWillReceiveProps(newProps) {
+    if (newProps.currentRuntime != this.props.currentRuntime) {
+      this.updateRuntimeIndicatorOffset();
+    }
   }
 
   updateRuntimeIndicatorOffset() {
     let RuntimeIndicator = ReactDOM.findDOMNode(this.refs.RuntimeIndicator);
     let offset = (this.props.currentRuntime / this.props.totalRuntime) * this.width;
-
-    RuntimeIndicator.style.transform = 'translate3d(' + offset + 'px,0,0)'
+    RuntimeIndicator.style.transform = 'translate3d(' + offset + 'px,0,0)';
   }
 
   getEventStyle(e) {

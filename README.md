@@ -1,8 +1,11 @@
-## Wishlist
-# Implement tracking pixel, see: https://github.com/reddit/reddit-mobile/
-# Implement a tree view for navigating channels, see: https://github.com/chenglou/react-treeview
+## Todo
+* Figure out model framework implementation
+* Figure out Flux implementation
+* Add Ember Data style serialzier/adapter
+* Implement tracking pixel, see: https://github.com/reddit/reddit-mobile/
 
-Insight Component Hierarchy (WIP)
+## Insight Component Hierarchy (WIP)
+```
 *
 |- NavigationBar
 |  `- LoginButton
@@ -36,12 +39,7 @@ Insight Component Hierarchy (WIP)
       `- Assessment
    |- ShowPollPanel
    `- ShowChatPanel
-
-Insight Flux Stores (Dynamic stuff)
-*
-|- ChannelStore
-|- ShowStore
-|- ChatStore
+```
 ## React Starter Kit — "isomorphic" web app boilerplate
 
 [![Support us on Bountysource](https://dl.dropboxusercontent.com/u/16006521/react-starter-kit/banner.png)](https://salt.bountysource.com/teams/react-starter-kit)<br>

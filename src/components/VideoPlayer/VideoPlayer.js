@@ -9,15 +9,13 @@ var DEFAULT_VIDEO_OPTIONS = {
   controls: true
 };
 
-function noop() {}
-
-import vjs from 'videojs';
 import _ from 'lodash';
 import cx from 'classnames';
 import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import withStyles from '../../decorators/withStyles';
 import styles from './VideoPlayer.css';
+import { canUseDOM } from 'fbjs/lib/ExecutionEnvironment';
 
 @withStyles(styles)
 class VideoPlayer extends Component {
@@ -37,8 +35,6 @@ class VideoPlayer extends Component {
       defaultVideoWidthAdjustment: PropTypes.number,
       debounceTime: PropTypes.number
     }),
-    vjsDefaultSkin: PropTypes.bool,
-    vjsBigPlayCentered: PropTypes.bool,
     children: PropTypes.element,
     dispose: PropTypes.bool,
     onNextVideo: PropTypes.func
@@ -47,65 +43,32 @@ class VideoPlayer extends Component {
   static defaultProps = {
     endlessMode: false,
     options: DEFAULT_VIDEO_OPTIONS,
-    onReady: noop,
     eventListeners: {},
     resize: false,
-    resizeOptions: {},
-    vjsDefaultSkin: true,
-    vjsBigPlayCentered: true,
-    onNextVideo: noop
-  };
-
-  componentDidMount() {
-    this.mountVideoPlayer();
-  };
-
-  componentWillReceiveProps(nextProps) {
-
-    var isEndless = this.props.endlessMode;
-    var willBeEndless = nextProps.endlessMode;
-
-    if (isEndless !== willBeEndless) {
-      if (willBeEndless) {
-        this.addEndlessMode();
-      } else {
-        this.removeEndlessMode();
-      }
-    }
-
-    var isResizable = this.props.resize;
-    var willBeResizeable = nextProps.resize;
-
-    if (isResizable !== willBeResizeable) {
-      if (willBeResizeable) {
-        this.addResizeEventListener();
-      } else {
-        this.removeResizeEventListener();
-      }
-    }
-
-    var currentSrc = this.props.src;
-    var newSrc = nextProps.src;
-
-    if (currentSrc !== newSrc) {
-      this.setVideoPlayerSrc(newSrc);
-    } else if (isEndless === willBeEndless) {
-      this.syncCurrentTime(nextProps.currentTime);
-      //this.restartVideo();
-    }
-  };
-
-  shouldComponentUpdate() {
-    return false;
-  };
-
-  componentWillUnmount() {
-    this.unmountVideoPlayer();
+    resizeOptions: {}
   };
 
   getVideoPlayer() {
     return this._player;
   };
+
+  componentDidUpdate() {
+    this.refs.videoPlayer.crossOrigin = "anonymous";
+    this.refs.videoPlayer.currentTime = this.props.currentTime;
+    this.renderFrame();
+  }
+
+  componentWillReceiveProps(newProps) {
+  }
+
+  componentDidMount() {
+    if (canUseDOM) {
+      this._framebuffer = document.createElement('canvas');
+      this.refs.videoPlayer.src = this.props.src;
+      this.refs.videoPlayer.currentTime = this.props.currentTime;
+      this.refs.videoPlayer.addEventListener('timeupdate', () => { this.renderFrame() });
+    }
+  }
 
   getVideoPlayerEl() {
     return ReactDOM.findDOMNode(this.refs.videoPlayer);
@@ -120,7 +83,7 @@ class VideoPlayer extends Component {
   };
 
   getVideoResizeOptions() {
-    return _defaults({}, this.props.resizeOptions, {
+    return _.defaults({}, this.props.resizeOptions, {
       aspectRatio: DEFAULT_ASPECT_RATIO,
       shortWindowVideoHeightAdjustment: DEFAULT_ADJUSTED_SIZE,
       defaultVideoWidthAdjustment: DEFAULT_ADJUSTED_SIZE,
@@ -155,42 +118,8 @@ class VideoPlayer extends Component {
     this._player.src(src);
   };
 
-  mountVideoPlayer() {
-    var src = this.props.src;
-    var options = this.getVideoPlayerOptions();
-
-    this._player = vjs(this.getVideoPlayerEl(), options);
-
-    var player = this._player;
-
-    player.ready(this.handleVideoPlayerReady.bind(this));
-
-    _.forEach(this.props.eventListeners, function(val, key) {
-      player.on(key, val);
-    });
-
-    player.src(src);
-
-    if (this.props.endlessMode) {
-      this.addEndlessMode();
-    }
-
-    this.syncCurrentTime(this.props.currentTime);
-  };
-
   unmountVideoPlayer() {
     this.removeResizeEventListener();
-    this._player.dispose();
-  };
-
-  addEndlessMode() {
-    var player = this._player;
-
-    player.on('ended', this.handleNextVideo);
-
-    if (player.ended()) {
-      this.handleNextVideo();
-    }
   };
 
   addResizeEventListener() {
@@ -200,26 +129,21 @@ class VideoPlayer extends Component {
     window.addEventListener('resize', this._handleVideoPlayerResize);
   };
 
-  removeEndlessMode() {
-    var player = this._player;
-
-    player.off('ended', this.handleNextVideo);
-  };
-
   removeResizeEventListener() {
     window.removeEventListener('resize', this._handleVideoPlayerResize.bind(this));
   };
 
   pauseVideo() {
-    this._player.pause();
+    this.refs.videoPlayer.pause();
   };
 
   playVideo() {
-    this._player.play();
+    this.refs.videoPlayer.play();
   };
 
   restartVideo() {
-    this._player.currentTime(0).play();
+    this.refs.videoPlayer.currentTime = 0;
+    this.refs.videoPlayer.play();
   };
 
   togglePauseVideo() {
@@ -230,48 +154,11 @@ class VideoPlayer extends Component {
     }
   };
 
-  handleVideoPlayerReady() {
-    this
-      .getVideoPlayerEl()
-      .parentElement
-      .removeAttribute('data-reactid');
-
-    if (this.props.resize) {
-      this.handleVideoPlayerResize();
-      this.addResizeEventListener();
-    }
-
-    this.props.onReady();
-  };
-
-  syncCurrentTime(currentTime = 0) {
-
-    console.log(currentTime);
-    // Set the runtime
-    if (currentTime) {
-      let player = this.getVideoPlayer();
-
-      console.log(player.seekable());
-
-      if (player.paused()) {
-        player.play();
-        player.currentTime(currentTime);
-        player.pause();
-      } else {
-        player.currentTime(currentTime);
-      }
-    }
-  }
-
   handleVideoPlayerResize() {
     var player = this._player;
     var videoMeasurements = this.getResizedVideoPlayerMeasurements();
 
     player.dimensions(videoMeasurements.width, videoMeasurements.height);
-  };
-
-  handleNextVideo() {
-    this.props.onNextVideo();
   };
 
   renderDefaultWarning() {
@@ -289,21 +176,46 @@ class VideoPlayer extends Component {
     return this.getVideoPlayerEl().parentElement.parentElement.offsetWidth;
   };
 
-  render() {
-    var videoPlayerClasses = cx({
-      'video-js': true,
-      'vjs-default-skin': this.props.vjsDefaultSkin,
-      'vjs-big-play-centered': this.props.vjsBigPlayCentered
-    });
+  renderFrame() {
+    let player = this.refs.videoPlayer;
+    let viewport = this.refs.viewport;
 
+    let viewportContext = this.refs.viewport.getContext('2d');
+    let bufferContext = this._framebuffer.getContext('2d');
+
+    // Draw video frame to the buffer
+    bufferContext.drawImage(
+      player,
+      0,
+      0,
+      player.videoWidth,
+      player.videoHeight,
+      0,
+      0,
+      viewport.width,
+      viewport.height
+    );
+
+    // Pull image data from buffer
+    let data = bufferContext.getImageData(0, 0, viewport.width, viewport.height);
+
+    // Draw buffer to viewport
+    viewportContext.putImageData(data, 0, 0);
+  }
+
+  render() {
     return (
-      <video ref="videoPlayer" className={videoPlayerClasses}>
-        {this.props.children || this.renderDefaultWarning()}
-      </video>
+      <div className="videoPlayerContainer">
+        <video ref="videoPlayer" style={{ display: "none" }}>
+          {this.props.children || this.renderDefaultWarning()}
+        </video>
+        <canvas ref="viewport"/>
+      </div>
     );
   };
 
   _handleVideoPlayerResize = () => {};
+  _framebuffer = null;
 
 };
 

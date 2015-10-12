@@ -2,14 +2,5 @@
   "name": "VideoPlayer",
   "version": "0.0.0",
   "private": true,
-  "main": "./VideoPlayer.js",
-  "fonts": [
-  	"../../../node_modules/videojs/dist/video-js/font/vjs.eot",
-  	"../../../node_modules/videojs/dist/video-js/font/vjs.svg",
-  	"../../../node_modules/videojs/dist/video-js/font/vjs.ttf",
-  	"../../../node_modules/videojs/dist/video-js/font/vjs.woff"
-  ],
-  "dependencies": {
-    "videojs": "^4.12.15"
-  }
+  "main": "./VideoPlayer.js"
 }
